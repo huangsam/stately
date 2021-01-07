@@ -1,7 +1,7 @@
 from stately.base import ContextHandling, StateHandling
 from stately.constants import INITIAL_STAMINA
 from stately.enums import PersonStateKey
-from stately.person import PassiveState
+from stately.states import PassiveState
 
 
 class PersonContext(StateHandling, ContextHandling):
