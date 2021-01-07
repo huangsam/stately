@@ -7,7 +7,11 @@ _RUNNING_EFFORT = 3
 _RESTING_POWER = 5
 
 
-# Placed Person here to avoid cyclic dependencies
+# Placed Person here to avoid cyclic dependencies. The con though is that too
+# much code may end up living in one module. An alternative solution is to
+# actually defer the PassiveState import until the constructor of Person is
+# invoked. See the following resource for more tips:
+# https://stackabuse.com/python-circular-imports/
 class Person(State):
     def __init__(self, name: str):
         self.name = name
