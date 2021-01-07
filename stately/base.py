@@ -1,8 +1,10 @@
 from abc import ABC, abstractmethod
 
 
-class State(ABC):
+class StateHandling(ABC):
+    """State interface."""
 
+    @classmethod
     @abstractmethod
     def get_state_key(self):
         raise LookupError
@@ -17,4 +19,12 @@ class State(ABC):
 
     @abstractmethod
     def resting(self):
+        raise NotImplementedError
+
+
+class ContextChanging(ABC):
+    """Context interface."""
+
+    @abstractmethod
+    def change_state(self, state: StateHandling):
         raise NotImplementedError

@@ -1,101 +1,69 @@
-from stately.base import State
+from typing import TYPE_CHECKING
+
+from stately.base import StateHandling
+from stately.constants import RESTING_POWER, RUNNING_EFFORT, WALKING_EFFORT
 from stately.enums import PersonStateKey
 
-_INITIAL_STAMINA = 5
-_WALKING_EFFORT = 2
-_RUNNING_EFFORT = 3
-_RESTING_POWER = 5
+if TYPE_CHECKING:
+    from stately.contexts import PersonContext
 
 
-# Placed Person here to avoid cyclic dependencies. The con though is that too
-# much code may end up living in one module. An alternative solution is to
-# actually defer the PassiveState import until the constructor of Person is
-# invoked. See the following resource for more tips:
-# https://stackabuse.com/python-circular-imports/
-class Person(State):
-    def __init__(self, name: str):
-        self.name = name
-        self.stamina = _INITIAL_STAMINA
-        self.state = PassiveState(self)
+class PersonActive(StateHandling):
+    """Person active - when he/she is exercising."""
 
-    def get_state_key(self) -> PersonStateKey:
-        return self.state.get_state_key()
+    def __init__(self, person_ctx: "PersonContext"):
+        self.person_ctx = person_ctx
 
-    def is_tired(self) -> bool:
-        return self.stamina < 0
-
-    def can_move(self, effort: int) -> bool:
-        return self.stamina >= effort
-
-    def lose_energy(self, effort: int):
-        self.stamina -= effort
-
-    def gain_energy(self, effort: int):
-        self.stamina += effort
-
-    def change_state(self, state: State):
-        self.state = state
-
-    def walking(self):
-        self.state.walking()
-
-    def running(self):
-        self.state.running()
-
-    def resting(self):
-        self.state.resting()
-
-
-class ActiveState(State):
-    def __init__(self, context: Person):
-        self.person: Person = context
-
-    def get_state_key(self):
+    @classmethod
+    def get_state_key(cls):
         return PersonStateKey.ACTIVE
 
     def walking(self):
-        print(f"{self.person.name} is walking")
-        self.person.lose_energy(_WALKING_EFFORT)
-        if self.person.is_tired():
-            print(f"{self.person.name} needs a break from walking")
-            self.person.change_state(PassiveState(self.person))
+        print(f"{self.person_ctx.name} is walking")
+        self.person_ctx.lose_energy(WALKING_EFFORT)
+        if self.person_ctx.is_tired():
+            print(f"{self.person_ctx.name} needs a break from walking")
+            self.person_ctx.change_state(PassiveState(self.person_ctx))
 
     def running(self):
-        print(f"{self.person.name} is running")
-        self.person.lose_energy(_RUNNING_EFFORT)
-        if self.person.is_tired():
-            print(f"{self.person.name} needs a break from running")
-            self.person.change_state(PassiveState(self.person))
+        print(f"{self.person_ctx.name} is running")
+        self.person_ctx.lose_energy(RUNNING_EFFORT)
+        if self.person_ctx.is_tired():
+            print(f"{self.person_ctx.name} needs a break from running")
+            self.person_ctx.change_state(PassiveState(self.person_ctx))
 
     def resting(self):
-        print(f"{self.person.name} is going home to get some rest")
-        self.person.gain_energy(_RESTING_POWER)
-        self.person.change_state(PassiveState(self.person))
+        print(f"{self.person_ctx.name} is going home to get some rest")
+        self.person_ctx.gain_energy(RESTING_POWER)
+        self.person_ctx.change_state(PassiveState(self.person_ctx))
 
 
-class PassiveState(State):
-    def __init__(self, context: Person):
-        self.person: Person = context
+class PassiveState(StateHandling):
+    """Person passive - when he/she is not exercising."""
 
-    def get_state_key(self):
+    def __init__(self, person_ctx: "PersonContext"):
+        self.person_ctx: PersonContext = person_ctx
+
+    @classmethod
+    def get_state_key(cls):
         return PersonStateKey.PASSIVE
 
     def walking(self):
-        if self.person.can_move(_WALKING_EFFORT):
-            print(f"{self.person.name} is walking after a break")
-            self.person.lose_energy(_WALKING_EFFORT)
-            self.person.change_state(ActiveState(self.person))
+        if self.person_ctx.can_move(WALKING_EFFORT):
+            print(f"{self.person_ctx.name} is walking after a break")
+            self.person_ctx.lose_energy(WALKING_EFFORT)
+            self.person_ctx.change_state(PersonActive(self.person_ctx))
         else:
-            print(f"{self.person.name} cannot walk and needs a break")
+            print(f"{self.person_ctx.name} cannot walk and needs a break")
 
     def running(self):
-        if self.person.can_move(_RUNNING_EFFORT):
-            print(f"{self.person.name} is running after break")
-            self.person.lose_energy(_RUNNING_EFFORT)
-            self.person.change_state(ActiveState(self.person))
+        if self.person_ctx.can_move(RUNNING_EFFORT):
+            print(f"{self.person_ctx.name} is running after break")
+            self.person_ctx.lose_energy(RUNNING_EFFORT)
+            self.person_ctx.change_state(PersonActive(self.person_ctx))
         else:
-            print(f"{self.person.name} cannot run and needs a break")
+            print(f"{self.person_ctx.name} cannot run and needs a break")
 
     def resting(self):
-        print(f"{self.person.name} is resting peacefully")
-        self.person.gain_energy(_RESTING_POWER)
+        print(f"{self.person_ctx.name} is resting peacefully")
+        self.person_ctx.gain_energy(RESTING_POWER)
