@@ -22,7 +22,7 @@ class StateHandling(ABC):
         raise NotImplementedError
 
 
-class ContextChanging(ABC):
+class ContextHandling(ABC):
     """Context interface."""
 
     @abstractmethod

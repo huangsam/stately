@@ -1,10 +1,10 @@
-from stately.base import ContextChanging, StateHandling
+from stately.base import ContextHandling, StateHandling
 from stately.constants import INITIAL_STAMINA
 from stately.enums import PersonStateKey
 from stately.person import PassiveState
 
 
-class PersonContext(StateHandling, ContextChanging):
+class PersonContext(StateHandling, ContextHandling):
     """Person state context."""
 
     def __init__(self, name: str):
