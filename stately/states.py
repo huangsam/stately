@@ -58,7 +58,7 @@ class PassiveState(StateHandling):
 
     def running(self):
         if self.person_ctx.can_move(RUNNING_EFFORT):
-            print(f"{self.person_ctx.name} is running after break")
+            print(f"{self.person_ctx.name} is running after a break")
             self.person_ctx.lose_energy(RUNNING_EFFORT)
             self.person_ctx.change_state(PersonActive(self.person_ctx))
         else:

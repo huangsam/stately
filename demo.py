@@ -24,15 +24,19 @@ def main():
     person_ctx.resting()
     assert person_ctx.get_state_key() is PersonStateKey.PASSIVE
 
-    # Gets back to walking
+    # Gets back to walking and becomes active
     person_ctx.walking()
     assert person_ctx.get_state_key() is PersonStateKey.ACTIVE
 
-    # Takes the rest of the day off
+    # Takes a long rest and becomes passive
     person_ctx.resting()
     assert person_ctx.get_state_key() is PersonStateKey.PASSIVE
     person_ctx.resting()
     assert person_ctx.get_state_key() is PersonStateKey.PASSIVE
+
+    # Gets back to running and becomes active
+    person_ctx.running()
+    assert person_ctx.get_state_key() is PersonStateKey.ACTIVE
 
 
 if __name__ == '__main__':
