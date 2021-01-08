@@ -14,8 +14,7 @@ class PersonActive(StateHandling):
     def __init__(self, person_ctx: "PersonContext"):
         self.person_ctx = person_ctx
 
-    @classmethod
-    def get_state_key(cls):
+    def get_state_key(self):
         return PersonStateKey.ACTIVE
 
     def walking(self):
@@ -23,33 +22,32 @@ class PersonActive(StateHandling):
         self.person_ctx.lose_energy(WALKING_EFFORT)
         if self.person_ctx.is_tired():
             print(f"{self.person_ctx.name} needs a break from walking")
-            self.person_ctx.change_state(PassiveState(self.person_ctx))
+            self.person_ctx.change_state(PersonPassive(self.person_ctx))
 
     def running(self):
         print(f"{self.person_ctx.name} is running")
         self.person_ctx.lose_energy(RUNNING_EFFORT)
         if self.person_ctx.is_tired():
             print(f"{self.person_ctx.name} needs a break from running")
-            self.person_ctx.change_state(PassiveState(self.person_ctx))
+            self.person_ctx.change_state(PersonPassive(self.person_ctx))
 
     def resting(self):
         print(f"{self.person_ctx.name} is going home to get some rest")
         self.person_ctx.gain_energy(RESTING_POWER)
-        self.person_ctx.change_state(PassiveState(self.person_ctx))
+        self.person_ctx.change_state(PersonPassive(self.person_ctx))
 
 
-class PassiveState(StateHandling):
+class PersonPassive(StateHandling):
     """Person passive - when he/she is not exercising."""
 
     def __init__(self, person_ctx: "PersonContext"):
         self.person_ctx: PersonContext = person_ctx
 
-    @classmethod
-    def get_state_key(cls):
+    def get_state_key(self):
         return PersonStateKey.PASSIVE
 
     def walking(self):
-        if self.person_ctx.can_move(WALKING_EFFORT):
+        if self.person_ctx.can_move_with(WALKING_EFFORT):
             print(f"{self.person_ctx.name} is walking after a break")
             self.person_ctx.lose_energy(WALKING_EFFORT)
             self.person_ctx.change_state(PersonActive(self.person_ctx))
@@ -57,7 +55,7 @@ class PassiveState(StateHandling):
             print(f"{self.person_ctx.name} cannot walk and needs a break")
 
     def running(self):
-        if self.person_ctx.can_move(RUNNING_EFFORT):
+        if self.person_ctx.can_move_with(RUNNING_EFFORT):
             print(f"{self.person_ctx.name} is running after a break")
             self.person_ctx.lose_energy(RUNNING_EFFORT)
             self.person_ctx.change_state(PersonActive(self.person_ctx))

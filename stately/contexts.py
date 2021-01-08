@@ -1,7 +1,7 @@
 from stately.base import ContextHandling, StateHandling
 from stately.constants import INITIAL_STAMINA
 from stately.enums import PersonStateKey
-from stately.states import PassiveState
+from stately.states import PersonPassive
 
 
 class PersonContext(StateHandling, ContextHandling):
@@ -10,12 +10,12 @@ class PersonContext(StateHandling, ContextHandling):
     def __init__(self, name: str):
         self.name = name
         self.stamina = INITIAL_STAMINA
-        self.state = PassiveState(self)
+        self.state = PersonPassive(self)
 
     def is_tired(self) -> bool:
         return self.stamina < 0
 
-    def can_move(self, effort: int) -> bool:
+    def can_move_with(self, effort: int) -> bool:
         return self.stamina >= effort
 
     def lose_energy(self, effort: int):

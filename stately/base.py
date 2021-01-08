@@ -4,7 +4,6 @@ from abc import ABC, abstractmethod
 class StateHandling(ABC):
     """State interface."""
 
-    @classmethod
     @abstractmethod
     def get_state_key(self):
         raise LookupError
