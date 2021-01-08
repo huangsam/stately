@@ -1,6 +1,5 @@
 from stately.base import ContextHandling, StateHandling
 from stately.constants import INITIAL_STAMINA
-from stately.enums import PersonStateKey
 from stately.states import PersonPassive
 
 
@@ -27,7 +26,7 @@ class PersonContext(StateHandling, ContextHandling):
     def change_state(self, state: StateHandling):
         self.state = state
 
-    def get_state_key(self) -> PersonStateKey:
+    def get_state_key(self):
         return self.state.get_state_key()
 
     def walking(self):

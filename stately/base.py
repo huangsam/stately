@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
+from enum import Enum
 
 
 class StateHandling(ABC):
     """State interface."""
 
     @abstractmethod
-    def get_state_key(self):
+    def get_state_key(self) -> Enum:
         raise LookupError
 
     @abstractmethod
