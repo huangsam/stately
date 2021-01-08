@@ -8,9 +8,9 @@ class PersonContext(StateHandling, ContextHandling):
     """Person state context."""
 
     def __init__(self, name: str):
-        self.name = name
-        self.stamina = INITIAL_STAMINA
-        self.state = PersonPassive(self)
+        self.name: str = name
+        self.stamina: int = INITIAL_STAMINA
+        self.state: StateHandling = PersonPassive(self)
 
     def is_tired(self) -> bool:
         return self.stamina < 0
