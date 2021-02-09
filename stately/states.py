@@ -5,6 +5,12 @@ from stately.constants import RESTING_POWER, RUNNING_EFFORT, WALKING_EFFORT
 from stately.enums import PersonStateKey
 
 if TYPE_CHECKING:
+    # With the State design pattern, one may encounter circumstances
+    # where there is a circular dependency issue. In such cases, look
+    # at using deferred imports or the `TYPE_CHECKING` to bypass these
+    # errors. Make sure to do these kinds of "hacks" in one/few isolated
+    # places. Otherwise, other developers will make mistakes and trigger
+    # circular dependencies in the rest of the codebase
     from stately.contexts import PersonContext
 
 
